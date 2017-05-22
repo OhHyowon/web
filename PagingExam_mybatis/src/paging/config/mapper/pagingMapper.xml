@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="paging.config.mapper.pagingMapper">
+
+	<select id="selectItemCount" resultType="_int">
+		SELECT COUNT(no) FROM
+		item_tb
+	</select>
+
+	<select id="selectItemList" parameterType="map" resultType="item">
+		<![CDATA[
+			SELECT no,item
+			FROM(
+				SELECT rownum rnum,no,item -- 정렬된 table을 임의로 만들고 SELECT 진행
+				FROM(
+					SELECT no,item FROM item_tb ORDER BY item desc -- 정렬 (정렬된 table)
+					)
+				WHERE rownum <=#{endItemNum}
+				)
+			WHERE rnum>=#{beginItemNum}
+		]]>
+	</select>
+</mapper>
